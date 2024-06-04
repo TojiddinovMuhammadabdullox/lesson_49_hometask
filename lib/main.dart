@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hometask/views/screens/home_screen.dart';
 import 'package:hometask/views/screens/results_screen.dart';
-import 'package:hometask/views/screens/settings_screen.dart';
+import 'package:hometask/views/screens/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,8 +19,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final List<Widget> _screens = [
     HomeScreen(),
-    const ResultsScreen(),
-    const SettingsScreen(),
+    const ResultsScreen(
+      tasks: [],
+    ),
+    const ProfileScreen(),
   ];
   int _selectedIndex = 0;
 
@@ -53,8 +55,8 @@ class _MyAppState extends State<MyApp> {
                     label: "Results",
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: "Settings",
+                    icon: Icon(Icons.person),
+                    label: "Profile",
                   ),
                 ],
               )
@@ -75,7 +77,7 @@ class _MyAppState extends State<MyApp> {
                   NavigationRailDestination(
                       icon: Icon(Icons.menu), label: Text("Results")),
                   NavigationRailDestination(
-                      icon: Icon(Icons.settings), label: Text("Settings")),
+                      icon: Icon(Icons.person), label: Text("Profile")),
                 ],
               ),
             Expanded(child: _screens[_selectedIndex])

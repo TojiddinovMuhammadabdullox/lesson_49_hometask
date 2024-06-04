@@ -1,5 +1,6 @@
-// lib/views/screens/todo_screen.dart
 import 'package:flutter/material.dart';
+import 'package:hometask/controller/todo_controller.dart';
+import 'package:hometask/views/screens/results_screen.dart';
 
 class ToDoScreen extends StatefulWidget {
   @override
@@ -7,23 +8,29 @@ class ToDoScreen extends StatefulWidget {
 }
 
 class _ToDoScreenState extends State<ToDoScreen> {
-  List<String> _tasks = [];
+  final TodoController _taskController = TodoController();
 
   void _addTask(String task) {
     setState(() {
-      _tasks.add(task);
+      _taskController.addTask(task);
     });
   }
 
   void _editTask(int index, String newTask) {
     setState(() {
-      _tasks[index] = newTask;
+      _taskController.editTask(index, newTask);
     });
   }
 
   void _deleteTask(int index) {
     setState(() {
-      _tasks.removeAt(index);
+      _taskController.deleteTask(index);
+    });
+  }
+
+  void _toggleTaskStatus(int index) {
+    setState(() {
+      _taskController.toggleTaskStatus(index);
     });
   }
 
@@ -63,6 +70,17 @@ class _ToDoScreenState extends State<ToDoScreen> {
     );
   }
 
+  void _navigateToResultsScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultsScreen(
+          tasks: _taskController.tasks,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,20 +91,32 @@ class _ToDoScreenState extends State<ToDoScreen> {
             icon: Icon(Icons.add),
             onPressed: () => _showTaskDialog(),
           ),
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: _navigateToResultsScreen,
+          ),
         ],
       ),
       body: ListView.builder(
-        itemCount: _tasks.length,
+        itemCount: _taskController.tasks.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(_tasks[index]),
+            title: Text(_taskController.tasks[index].name),
+            leading: Checkbox(
+              value: _taskController.tasks[index].isCompleted,
+              onChanged: (bool? value) {
+                _toggleTaskStatus(index);
+              },
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 IconButton(
                   icon: Icon(Icons.edit),
-                  onPressed: () =>
-                      _showTaskDialog(initialText: _tasks[index], index: index),
+                  onPressed: () => _showTaskDialog(
+                    initialText: _taskController.tasks[index].name,
+                    index: index,
+                  ),
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
